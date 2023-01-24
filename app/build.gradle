@@ -26,7 +26,11 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass = 'jlox.App'
+    mainClass = 'jlox.Lox'
+}
+
+run {
+    standardInput = System.in
 }
 
 tasks.named('test') {
