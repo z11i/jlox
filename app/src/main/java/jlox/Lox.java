@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Scanner;
 
 public class Lox {
 
@@ -33,7 +32,10 @@ public class Lox {
             while (true) {
                 System.out.print("> ");
                 String line = reader.readLine();
-                if (line == null || line.strip().equals("exit")) break;
+                if (line == null || line.strip().equals("exit")) {
+                    System.out.println("Bye!");
+                    break;
+                }
                 run(line);
                 hadError = false; // mistakes are ok in REPL
             }
@@ -42,7 +44,7 @@ public class Lox {
 
     private static void run(String source) {
         Scanner scanner = new Scanner(source);
-        scanner.tokens().forEach(System.out::println);
+        scanner.scanTokens().forEach(System.out::println);
     }
 
     static void error(int line, String message) {
