@@ -46,19 +46,40 @@ public class GenerateAst {
                     """
                             .formatted(baseName));
 
+            defineVisitor(bw, baseName, types);
+
+            // The AST classes
             for (String type : types) {
                 String className = type.split(":")[0].trim();
                 String fields = type.split(":")[1].trim();
                 defineType(bw, baseName, className, fields);
             }
 
+            // The base accept() method for the visitor pattern
+            bw.write("""
+                        abstract <R> R accept(Visitor<R> visitor);
+                    """);
+
             bw.write("}");
             bw.newLine();
         }
     }
 
+    private static void defineVisitor(BufferedWriter bw, String baseName, List<String> types) throws IOException {
+        bw.write("    interface Visitor<R> {");
+        bw.newLine();
+        for (String type : types) {
+            String typeName = type.split(":")[0].trim();
+            bw.write("        R visit%s%s(%s %s);".formatted(typeName, baseName, typeName, baseName.toLowerCase()));
+            bw.newLine();
+        }
+        bw.write("    }");
+        bw.newLine();
+    }
+
     private static void defineType(BufferedWriter bw, String baseName, String className, String fields)
             throws IOException {
+        // Constructor
         bw.write(
                 """
                     static class %s extends %s {
@@ -73,6 +94,15 @@ public class GenerateAst {
         }
         bw.write("        }");
         bw.newLine();
+
+        bw.write("""
+                        @Override
+                        <R> R accept(Visitor<R> visitor) {
+                            return visitor.visit%s%s(this);
+                        }
+                """.formatted(className, baseName));
+
+        // Fields
         for (String field : fieldArr) {
             bw.write("        final %s;".formatted(field));
             bw.newLine();
