@@ -1,2 +1,5 @@
 run:
-	@gradle run -q --console=plain
+	@./gradlew run -q --console=plain
+
+gen:
+	@./gradlew generateAst -q

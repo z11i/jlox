@@ -37,3 +37,9 @@ tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+
+task generateAst(type: JavaExec) {
+    mainClass = 'tool.GenerateAst'
+    classpath = sourceSets.main.runtimeClasspath
+    args './src/main/java/jlox'
+}
